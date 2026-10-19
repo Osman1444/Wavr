@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta
+      name="description"
+      content="Wavr: generate, draw and graph audio waves in your browser."
+    />
+    <title>Wavr</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <h1>Wav<b>r</b></h1>
+      <button class="chip" id="theme" aria-label="Toggle light or dark theme">☾ Dark</button>
+    </header>
+    <main>
+      <section class="panel" id="form">
+        <div class="seg" id="seg">
+          <button data-m="simple" class="on">Simple</button><button data-m="adv">Advanced</button
+          ><button data-m="math">Math</button>
+        </div>
+
+        <div class="pane on" id="p-simple">
+          <h3>Waveform</h3>
+          <div id="waves"></div>
+          <h3>Settings</h3>
+          <div class="row">
+            <label>Frequency</label
+            ><input class="r" id="sfs" type="range" min="0" max="1000" value="448" /><input
+              class="in num"
+              id="sf"
+              type="number"
+              min="20"
+              max="20000"
+              step="any"
+              value="440"
+            />
+          </div>
+          <div class="row">
+            <label>Amplitude</label
+            ><input class="r" id="sa" type="range" min="0" max="100" value="50" /><span
+              class="val"
+              id="sav"
+              >50%</span
+            >
+          </div>
+          <div class="row" id="pwr" style="display: none">
+            <label>PWM width</label
+            ><input class="r" id="pw" type="range" min="1" max="99" value="50" /><span
+              class="val"
+              id="pwv"
+              >50%</span
+            >
+          </div>
+        </div>
+
+        <div class="pane" id="p-adv">
+          <h3>Draw one cycle <small>drag on the canvas</small></h3>
+          <canvas class="cv" id="c-draw"></canvas>
+          <div class="btns">
+            <button class="chip" data-p="sine">Sine</button
+            ><button class="chip" data-p="square">Square</button
+            ><button class="chip" data-p="tri">Triangle</button
+            ><button class="chip" data-p="saw">Saw</button
+            ><button class="chip" data-p="rand">Random</button
+            ><button class="chip" id="smooth">Smooth</button>
+          </div>
+          <h3>Harmonics <small>1 to 16</small></h3>
+          <div id="harm"></div>
+          <h3>Settings</h3>
+          <div class="row">
+            <label>Frequency</label
+            ><input class="r" id="afs" type="range" min="0" max="1000" value="347" /><input
+              class="in num"
+              id="af"
+              type="number"
+              min="20"
+              max="20000"
+              step="any"
+              value="220"
+            />
+          </div>
+          <div class="row">
+            <label>Amplitude</label
+            ><input class="r" id="aa" type="range" min="0" max="100" value="50" /><span
+              class="val"
+              id="aav"
+              >50%</span
+            >
+          </div>
+        </div>
+
+        <div class="pane" id="p-math">
+          <h3>Equation <small>x is time in seconds</small></h3>
+          <input
+            class="in"
+            id="eq"
+            value="sin(2*pi*3*x)"
+            spellcheck="false"
+            autocomplete="off"
+            autocapitalize="off"
+          />
+          <div id="sug"></div>
+          <div id="err"></div>
+          <div id="eqv"></div>
+          <div class="btns" id="ex"></div>
+          <h3>x means</h3>
+          <div class="seg" id="tm">
+            <button data-t="0" class="on">Seconds</button><button data-t="1">Cycle at pitch</button>
+          </div>
+          <div class="row" id="pr" style="display: none">
+            <label>Pitch</label
+            ><input
+              class="in num"
+              id="pf"
+              type="number"
+              min="20"
+              max="20000"
+              step="any"
+              value="220"
+            /><span class="hint">Hz. The whole domain plays as one cycle.</span>
+          </div>
+          <div class="seg" id="ab">
+            <button data-e="0" class="on">A · As is</button
+            ><button data-e="1">B · Embed in carrier</button>
+          </div>
+          <div class="row" id="cr" style="display: none">
+            <label>Carrier</label
+            ><input
+              class="in num"
+              id="cf"
+              type="number"
+              min="20"
+              max="20000"
+              value="440"
+              step="any"
+            /><span class="hint">Hz, multiplied in as * sin(2*pi*f*x)</span>
+          </div>
+          <h3>Domain and range <small>free values</small></h3>
+          <div class="grid2">
+            <div>
+              <label>x min</label><input class="in" id="x0" type="number" step="any" value="0" />
+            </div>
+            <div>
+              <label>x max</label><input class="in" id="x1" type="number" step="any" value="1" />
+            </div>
+            <div>
+              <label>y min</label
+              ><input class="in" id="y0" type="number" step="any" value="-1" disabled />
+            </div>
+            <div>
+              <label>y max</label
+              ><input class="in" id="y1" type="number" step="any" value="1" disabled />
+            </div>
+          </div>
+          <label class="hint"><input type="checkbox" id="auto" checked /> Auto range for y</label>
+          <p class="hint">
+            The domain is one looping cycle, so its length sets the loop rate (1 / length). Values
+            outside the y range are clipped.
+          </p>
+          <div id="notes"></div>
+          <div class="row">
+            <label>Amplitude</label
+            ><input class="r" id="ma" type="range" min="0" max="100" value="50" /><span
+              class="val"
+              id="mav"
+              >50%</span
+            >
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="viz">
+        <div class="top">
+          <button class="play" id="play">▶ Play</button
+          ><label
+            >Volume <input class="r" id="vol" type="range" min="0" max="100" value="60"
+          /></label>
+        </div>
+        <h3>Wave shape <small id="rd"></small></h3>
+        <canvas class="cv" id="c-prev"></canvas>
+        <h3>Oscilloscope</h3>
+        <canvas class="cv" id="c-scope"></canvas>
+        <h3>Spectrum</h3>
+        <canvas class="cv" id="c-spec"></canvas>
+        <p class="hint">A built-in limiter keeps the output from getting too loud.</p>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>

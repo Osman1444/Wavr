@@ -1,0 +1,612 @@
+/* ==========================================================================
+   Wavr: styles
+   Flat Material-inspired look. All colours come from the theme variables
+   below; the dark theme only overrides those variables.
+   ========================================================================== */
+
+/* ---------- Theme tokens ---------- */
+:root {
+  --bg: #f5f5f5;
+  --surface: #fff;
+  --text: #212121;
+  --muted: #616161;
+  --field: #f0f0f0; /* inputs, equation view, wave tiles */
+  --seg-track: #e0e0e0; /* segmented control background */
+  --slider-track: #d9d9d9;
+  --canvas: #eee; /* graph background */
+  --tile-canvas: #fff; /* preview icon background inside wave tiles */
+  --accent: #1976d2;
+  --on-accent: #fff;
+  --accent-soft: #e3f2fd; /* chips, selected tile */
+  --accent-soft-hover: #bbdefb;
+  --accent-soft-text: #1976d2;
+  --warn-bg: #fff3e0;
+  --warn-text: #bf360c;
+  --ok-bg: #e3f2fd;
+  --ok-text: #0d47a1;
+  --stop: #d32f2f; /* Stop button */
+  --error: #d32f2f; /* error text */
+
+  --spring: cubic-bezier(0.34, 1.2, 0.64, 1);
+
+  color-scheme: light;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+html[data-theme='dark'] {
+  --bg: #121212;
+  --surface: #1e1e1e;
+  --text: #e8e8e8;
+  --muted: #a3a3a3;
+  --field: #2c2c2c;
+  --seg-track: #2c2c2c;
+  --slider-track: #3d3d3d;
+  --canvas: #2a2a2a;
+  --tile-canvas: #1e1e1e;
+  --accent: #64b5f6;
+  --on-accent: #0b1b33;
+  --accent-soft: #1e3a5f;
+  --accent-soft-hover: #25497a;
+  --accent-soft-text: #90caf9;
+  --warn-bg: #4a3000;
+  --warn-text: #ffb74d;
+  --ok-bg: #1e3a5f;
+  --ok-text: #90caf9;
+  --stop: #ef5350;
+  --error: #ef9a9a;
+
+  color-scheme: dark;
+}
+
+/* ---------- Base ---------- */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-padding-top: env(safe-area-inset-top, 0px);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font:
+    15px/1.4 Roboto,
+    'Helvetica Neue',
+    Arial,
+    system-ui,
+    sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+
+/* ---------- Layout ---------- */
+.app-header {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 22px 20px 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+h1 {
+  margin: 0;
+  font-size: 30px;
+  letter-spacing: -0.02em;
+}
+
+h1 b {
+  color: var(--accent);
+}
+
+main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 14px 20px 40px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  main {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.panel {
+  padding: 20px;
+  border-radius: 28px;
+  background: var(--surface);
+}
+
+h3 {
+  margin: 16px 0 8px;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+h3 small {
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--accent);
+}
+
+.pane {
+  display: none;
+}
+
+.pane.on {
+  display: block;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 10px 0;
+}
+
+.row > label {
+  min-width: 78px;
+  font-weight: 600;
+}
+
+.row input.r {
+  flex: 1;
+  min-width: 0;
+}
+
+.val {
+  min-width: 64px;
+  text-align: right;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.hint {
+  margin: 4px 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.grid2 label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+/* ---------- Segmented control with sliding "lens" ---------- */
+.seg {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  gap: 4px;
+  margin-bottom: 6px;
+  padding: 3px;
+  border-radius: 16px;
+  background: var(--seg-track);
+  touch-action: pan-y;
+}
+
+.seg button {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  padding: 9px 6px;
+  border: 0;
+  border-radius: 13px;
+  background: none;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.seg button.on {
+  color: var(--on-accent);
+}
+
+/* The moving highlight; position and size are set from JS (placeAll). */
+.seg .lens {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  left: 0;
+  width: 0;
+  z-index: 0;
+  border-radius: 13px;
+  background: var(--accent);
+  transition:
+    left 0.55s var(--spring),
+    width 0.55s var(--spring),
+    transform 0.4s var(--spring);
+}
+
+.seg.press .lens {
+  transform: scale(1.03, 1.08);
+}
+
+/* ---------- Form fields ---------- */
+.in {
+  width: 100%;
+  padding: 9px 12px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--field);
+  color: var(--text);
+  font: inherit;
+  outline: none;
+}
+
+.in:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.num {
+  width: 96px;
+  flex: none;
+}
+
+/* ---------- Sliders ---------- */
+/* --p (fill percentage) is set from JS; --st (stretch) while dragging. */
+input.r {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 12px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, var(--accent) var(--p, 50%), var(--slider-track) 0);
+  outline: none;
+}
+
+input.r::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 8px;
+  height: 30px;
+  border-radius: 4px;
+  background: var(--accent);
+  transition:
+    transform 0.35s var(--spring),
+    background 0.25s;
+}
+
+input.r::-moz-range-thumb {
+  width: 8px;
+  height: 30px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--accent);
+  transition: transform 0.35s var(--spring);
+}
+
+input.r:active::-webkit-slider-thumb,
+input.r:active::-moz-range-thumb {
+  transform: scale(calc(1.25 + var(--st, 0) * 0.6), 1.1);
+}
+
+/* ---------- Buttons and chips ---------- */
+.btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+.chip,
+#sug button {
+  padding: 5px 11px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-soft-text);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    transform 0.5s var(--spring),
+    background 0.3s;
+}
+
+.chip:hover,
+#sug button:hover {
+  background: var(--accent-soft-hover);
+}
+
+.chip:active,
+#sug button:active,
+.wv:active,
+.play:active {
+  transform: scale(1.04);
+}
+
+.play {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-width: 130px;
+  padding: 14px 28px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition:
+    transform 0.5s var(--spring),
+    min-width 0.55s var(--spring);
+}
+
+.play.on {
+  min-width: 180px;
+  background: var(--stop);
+  color: #fff;
+}
+
+/* Animated equaliser bars shown inside the Stop button. */
+.eq {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 16px;
+}
+
+.eq i {
+  width: 3px;
+  height: 4px;
+  border-radius: 2px;
+  background: currentColor;
+  animation: bar 0.9s ease-in-out infinite;
+}
+
+.eq i:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.eq i:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.top label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 160px;
+  font-weight: 600;
+}
+
+.top input {
+  flex: 1;
+}
+
+/* ---------- Waveform picker (Simple mode) ---------- */
+#waves {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(98px, 1fr));
+  gap: 8px;
+}
+
+.wv {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 6px 8px;
+  border: 0;
+  border-radius: 18px;
+  background: var(--field);
+  font: inherit;
+  font-size: 12px;
+  color: var(--muted);
+  cursor: pointer;
+  transition:
+    transform 0.5s var(--spring),
+    background 0.3s;
+}
+
+.wv canvas {
+  width: 100%;
+  height: 42px;
+  border-radius: 12px;
+  background: var(--tile-canvas);
+}
+
+.wv.on {
+  background: var(--accent-soft);
+  color: var(--accent-soft-text);
+  font-weight: 600;
+}
+
+/* ---------- Graphs ---------- */
+canvas.cv {
+  display: block;
+  width: 100%;
+  height: 150px;
+  border-radius: 18px;
+  background: var(--canvas);
+}
+
+#c-draw {
+  height: 190px;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+/* ---------- Harmonics (Advanced mode) ---------- */
+#harm {
+  display: flex;
+  justify-content: space-between;
+  gap: 2px;
+}
+
+#harm div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 10px;
+  color: var(--muted);
+}
+
+#harm input {
+  writing-mode: vertical-lr;
+  direction: rtl;
+  width: 18px;
+  height: 92px;
+  margin: 0;
+  accent-color: var(--accent);
+}
+
+/* ---------- Math mode ---------- */
+#eqv {
+  margin: 8px 0;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--field);
+  font:
+    15px ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    monospace;
+  word-break: break-all;
+}
+
+/* Highlights the carrier term appended in "Embed in carrier" mode. */
+.box {
+  padding: 1px 6px;
+  border-radius: 8px;
+  background: var(--accent-soft-hover);
+  color: var(--ok-text);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* Autocomplete chips: the row always reserves its height so typing never shifts the layout. */
+#sug {
+  display: flex;
+  gap: 6px;
+  height: 30px;
+  margin-top: 6px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s;
+}
+
+#sug.on {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#sug button {
+  padding: 3px 10px;
+  font:
+    12px ui-monospace,
+    Menlo,
+    monospace;
+  white-space: nowrap;
+}
+
+kbd {
+  margin-left: 3px;
+  padding: 0 4px;
+  border-radius: 5px;
+  background: var(--field);
+  font: 10px system-ui;
+  color: var(--muted);
+}
+
+#err {
+  min-height: 18px;
+  font-size: 13px;
+  color: var(--error);
+}
+
+.pill {
+  margin: 6px 0;
+  padding: 8px 12px;
+  border-radius: 14px;
+  font-size: 13px;
+}
+
+.pill.warn {
+  background: var(--warn-bg);
+  color: var(--warn-text);
+}
+
+.pill.ok {
+  background: var(--ok-bg);
+  color: var(--ok-text);
+}
+
+/* ---------- Motion ---------- */
+@keyframes bar {
+  50% {
+    height: 16px;
+  }
+}
+
+/* New elements fade and scale in. */
+@keyframes appear {
+  from {
+    opacity: 0;
+    filter: blur(4px);
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: none;
+  }
+}
+
+.pill,
+#sug button,
+.box,
+#cr,
+#err:not(:empty) {
+  animation: appear 0.5s var(--spring) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
